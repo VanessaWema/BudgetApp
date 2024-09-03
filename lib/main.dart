@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stubudget/authentication/forgot_password.dart';
 import 'package:stubudget/authentication/log_in.dart';
 import 'package:stubudget/authentication/sign_up.dart';
+
 import 'package:stubudget/screens/dashboard/blocs/get_expense_bloc/get_expense_bloc.dart';
 
 import 'package:stubudget/screens/home.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: (false),
-      home: LogIn(),
+      home: Home(),
       routes: {
         '/LogIn': (context) => LogIn(),
         '/SignUp': (context) => SignUp(),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stubudget/authentication/log_in.dart';
@@ -15,6 +16,47 @@ class _ProfileState extends State<Profile> {
   final TextEditingController changeUsernameController =
       TextEditingController();
   final TextEditingController changeEmailController = TextEditingController();
+
+  final String userId = "your_user_id_here";
+
+  void _changeUsername() async {
+    final newUsername = changeUsernameController.text.trim();
+    if (newUsername.isNotEmpty) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'username': newUsername,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Username has been updated successfully')));
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error')));
+      }
+    }
+  }
+
+  void _changeEmail() async {
+    final newEmail = changeEmailController.text.trim();
+    if (newEmail.isNotEmpty) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'email': newEmail,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Email has been updated successfully')));
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,51 +153,52 @@ class _ProfileState extends State<Profile> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: ListTile(
-                title: Text("Username"),
-                subtitle: Text("Vanessa"),
-                leading: Icon(CupertinoIcons.person),
-                trailing: IconButton(
-                    icon: Icon(CupertinoIcons.square_pencil),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: TextField(
-                                  controller: changeUsernameController,
-                                  decoration: InputDecoration(
-                                      labelText: "Change your username")
+              child: StreamBuilder<DocumentSnapshot>(
+                  stream: null,
+                  builder: (context, snapshot) {
+                    return ListTile(
+                      title: Text("Username"),
+                      subtitle: Text("Vanessa"),
+                      leading: Icon(CupertinoIcons.person),
+                      trailing: IconButton(
+                          icon: Icon(CupertinoIcons.square_pencil),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: TextField(
+                                        controller: changeUsernameController,
+                                        decoration: InputDecoration(
+                                            labelText: "Change your username")),
+                                    backgroundColor: Colors.teal[50],
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(color: Colors.teal),
+                                        ),
                                       ),
-                                      backgroundColor: Colors.teal[50],
-                                      actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Save",
-                                  style: TextStyle(
-                                    color: Colors.teal
-                                  ),),
-                                ),
-                                TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        (() {
-                                          
-                                        });
-                                        Navigator.of(context).pop();
-                                      });
-                                    },
-                                    child: Text("Cancel",
-                                    style: TextStyle(
-                                      color: Colors.teal
-                                    ),))
-                              ],
-                            );
-                          });
-                    }),
-              ),
+                                      TextButton(
+                                          onPressed: () {
+                                            _changeUsername();
+
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            "Save",
+                                            style:
+                                                TextStyle(color: Colors.teal),
+                                          ))
+                                    ],
+                                  );
+                                });
+                          }),
+                    );
+                  }),
             ),
             SizedBox(height: 30),
             Container(
@@ -185,24 +228,23 @@ class _ProfileState extends State<Profile> {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text("Save",
-                                  style: TextStyle(
-                                    color: Colors.teal,
-                                  ),),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.teal,
+                                    ),
+                                  ),
                                 ),
                                 TextButton(
                                     onPressed: () {
-                                      setState(() {
-                                        (() {
-                                          
-                                        });
-                                        Navigator.of(context).pop();
-                                      });
+                                      _changeEmail();
+
+                                      Navigator.of(context).pop();
                                     },
-                                    child: Text("Cancel",
-                                    style: TextStyle(
-                                      color: Colors.teal
-                                    ),))
+                                    child: Text(
+                                      "Save",
+                                      style: TextStyle(color: Colors.teal),
+                                    ))
                               ],
                             );
                           });

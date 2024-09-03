@@ -22,7 +22,68 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // This widget is the root of your application.
+  double totalBalance = 10000;
+  double income = 20000;
+  double get TotalExpenses {
+    return widget.expenses.fold(0, (sum, expense) => sum + expense.amount);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    totalBalance = income - TotalExpenses;
+  }
+
+  void addExpense(Expense newExpense) {
+    setState(() {
+      widget.expenses.add(newExpense);
+    });
+
+    totalBalance = income - TotalExpenses;
+  }
+
+  void updateIncome(double newIncome) {
+    setState(() {
+      income = newIncome;
+      totalBalance = income - TotalExpenses;
+    });
+  }
+
+  void showIncomeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        double newIncome = income;
+        return AlertDialog(
+          title: Text("Income"),
+          content: TextField(
+            decoration: InputDecoration(
+              labelText: "Enter new income"),
+              onChanged: (value) {
+                newIncome = double.tryParse(value) ?? income;
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+
+                child: Text("Remove")),
+                TextButton(
+                  child: Text("Save"),
+                  onPressed: () {
+                    updateIncome(newIncome);
+                    Navigator.pop(context);
+                  }, 
+                  ),
+            ],
+      
+          );
+
+        
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GetExpenseBloc, GetExpenseState>(
@@ -38,8 +99,10 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               backgroundColor: Colors.teal[200],
-              actions: const [
-                Text(
+              actions: [
+                Text("Edit Income here"),
+                IconButton(onPressed: showIncomeDialog, icon: const Icon(Icons.edit)),
+                const Text(
                   "Dashboard",
                   style: TextStyle(
                     fontSize: 20,
@@ -112,11 +175,10 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       );
                       if (newExpense != null) {
-                  setState(() {
-                    state.expenses.insert(0,newExpense);
-                  });
-                }
-                      
+                        setState(() {
+                          state.expenses.insert(0, newExpense);
+                        });
+                      }
                     },
                   ),
                   SizedBox(height: 60),
@@ -132,7 +194,6 @@ class _DashboardState extends State<Dashboard> {
                           builder: (context) => LogIn(),
                         ),
                       );
-                      
                     },
                   ),
                 ],
@@ -193,7 +254,7 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               Text("Total Balance"),
                               Text(
-                                "sh 20000",
+                                " ${totalBalance.toStringAsFixed(2)}",
                                 style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.black,
@@ -234,7 +295,8 @@ class _DashboardState extends State<Dashboard> {
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 15),
                                             ),
-                                            Text("sh 80000"),
+                                            Text(
+                                                " ${income.toStringAsFixed(2)}"),
                                           ],
                                         )
                                       ],
@@ -261,12 +323,13 @@ class _DashboardState extends State<Dashboard> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Expenses",
+                                              "Total Expenses",
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w400),
                                             ),
-                                            Text("sh 60000"),
+                                            Text(
+                                                " ${TotalExpenses.toStringAsFixed(2)}"),
                                           ],
                                         )
                                       ],
@@ -290,7 +353,7 @@ class _DashboardState extends State<Dashboard> {
                         Container(
                           height: 700,
                           child: ListView.builder(
-                              itemCount: expenses.length,
+                              itemCount: widget.expenses.length,
                               itemBuilder: (context, int i) {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 16.0),
@@ -313,19 +376,19 @@ class _DashboardState extends State<Dashboard> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            expenses[i].category.name,
+                                            widget.expenses[i].category.name,
                                             style: TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w600,
-                                              color: Color(
-                                                  expenses[i].category.color),
+                                              color: Color(widget
+                                                  .expenses[i].category.color),
                                             ),
                                           ),
                                           SizedBox(width: 40),
                                           Row(
                                             children: [
                                               Text(
-                                                '\$${expenses[i].amount}.00',
+                                                '\$${widget.expenses[i].amount}.00',
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontWeight:
@@ -334,8 +397,8 @@ class _DashboardState extends State<Dashboard> {
                                             ],
                                           ),
                                           Text(
-                                            DateFormat('dd/MM/yyyy')
-                                                .format(expenses[i].date),
+                                            DateFormat('dd/MM/yyyy').format(
+                                                widget.expenses[i].date),
                                             style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 14,
