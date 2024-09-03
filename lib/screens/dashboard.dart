@@ -161,7 +161,7 @@ class _DashboardState extends State<Dashboard> {
                             )));
                 if (newExpense != null) {
                   setState(() {
-                    state.expenses.insert(0, newExpense);
+                    state.expenses.add(newExpense);
                   });
                 }
               },
