@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "198182031353",
+    "project_id": "stu-budget",
+    "storage_bucket": "stu-budget.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:198182031353:android:fc3401b0638a45d3abb728",
+        "android_client_info": {
+          "package_name": "com.example.stubudget"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb4QG6mYtSr3oDMgrbzNelKFNXP47WUyw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
