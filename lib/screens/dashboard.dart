@@ -87,8 +87,8 @@ class _DashboardState extends State<Dashboard> {
                   ListTile(
                     leading: (Icon(Icons.settings, size: 30)),
                     title: Text("SETTINGS"),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      Expense? newExpense = await Navigator.push(
                         context,
                         MaterialPageRoute<Expense>(
                           builder: (BuildContext context) => MultiBlocProvider(
@@ -111,8 +111,11 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                       );
-                      
-                  
+                      if (newExpense != null) {
+                  setState(() {
+                    state.expenses.insert(0,newExpense);
+                  });
+                }
                       
                     },
                   ),
@@ -161,7 +164,7 @@ class _DashboardState extends State<Dashboard> {
                             )));
                 if (newExpense != null) {
                   setState(() {
-                    state.expenses.add(newExpense);
+                    state.expenses.insert(0, newExpense);
                   });
                 }
               },
